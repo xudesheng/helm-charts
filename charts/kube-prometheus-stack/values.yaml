@@ -2235,7 +2235,24 @@ prometheus:
     ## The scrape configuration example below will find master nodes, provided they have the name .*mst.*, relabel the
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
-    additionalScrapeConfigs: []
+    #additionalScrapeConfigs: []
+    additionalScrapeConfigs:
+      - job_name: thingworx_cluster
+        metrics_path: /Thingworx/Metrics
+        basic_auth:
+          username: prometheus
+          password: HealthCheck2021
+        scrape_interval: 15s
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+              - thingworx-ha
+        relabel_configs:
+          - action: keep
+            source_labels:
+            - __meta_kubernetes_service_name
+            regex: thingworx-twx
     # - job_name: kube-etcd
     #   kubernetes_sd_configs:
     #     - role: node
